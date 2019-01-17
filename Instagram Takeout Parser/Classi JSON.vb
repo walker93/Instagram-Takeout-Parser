@@ -1,9 +1,12 @@
-﻿Module Classi_JSON
+﻿Imports Newtonsoft.Json
+
+Module Classi_JSON
 
     Public Class comments
         Public Property live_comments() As Object
-        Public Property media_comments()() As Media_Comments
+        Public Property media_comments() As Media_Comments
     End Class
+
 
     Public Class Media_Comments
         Public Property timestamp As Date
@@ -13,9 +16,9 @@
 
     '--------------------
 
-    Public Class contatti
-        Public Property array() As contatto
-    End Class
+    'Public Class contatti
+    '    Public Property array() As contatto
+    'End Class
 
     Public Class contatto
         Public Property contact As String
