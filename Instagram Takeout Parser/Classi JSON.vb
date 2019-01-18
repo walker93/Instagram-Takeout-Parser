@@ -4,21 +4,10 @@ Module Classi_JSON
 
     Public Class comments
         Public Property live_comments() As Object
-        Public Property media_comments() As Media_Comments
-    End Class
-
-
-    Public Class Media_Comments
-        Public Property timestamp As Date
-        Public Property text As String
-        Public Property user As String
+        Public Property media_comments()(3) As Object
     End Class
 
     '--------------------
-
-    'Public Class contatti
-    '    Public Property array() As contatto
-    'End Class
 
     Public Class contatto
         Public Property contact As String
@@ -29,28 +18,18 @@ Module Classi_JSON
     '--------------------
 
     Public Class likes
-        Public Property comment_likes()() As Comment_Likes
-        Public Property media_likes()() As Media_Likes
-    End Class
-
-    Public Class Comment_Likes
-        Public Property timestamp As Date
-        Public Property user As String
-    End Class
-
-    Public Class Media_Likes
-        Public Property timestamp As Date
-        Public Property user As String
+        Public Property comment_likes()(2) As Object
+        Public Property media_likes()(2) As Object
     End Class
 
     '------------------------
 
     Public Class media
-        Public Property direct() As Direct
-        Public Property photos() As Photo
-        Public Property profile() As Profile
-        Public Property stories() As Story
-        Public Property videos() As Video
+        Public Property direct As List(Of Direct)
+        Public Property photos As List(Of Photo)
+        Public Property profile As List(Of Profile)
+        Public Property stories As List(Of Story)
+        Public Property videos As List(Of Video)
     End Class
 
     Public Class Direct
@@ -85,13 +64,9 @@ Module Classi_JSON
 
     '------------------------------
 
-    Public Class messages
-        Public Property conversations() As convo_block
-    End Class
-
     Public Class convo_block
-        Public Property conversation() As Conversation
-        Public Property participants() As String
+        Public Property conversation As List(Of Conversation)
+        Public Property participants As List(Of String)
     End Class
 
     Public Class Conversation
@@ -103,7 +78,7 @@ Module Classi_JSON
         Public Property media_share_caption As String
         Public Property media_share_url As String
         Public Property link As String
-        Public Property likes() As _Like
+        Public Property likes As List(Of _Like)
         Public Property heart As String
         Public Property video_call_action As String
         Public Property media As String
@@ -131,22 +106,18 @@ Module Classi_JSON
     '-----------------------
 
     Public Class Saved
-        Public Property saved_collections() As Saved_Collections
-        Public Property saved_media()() As Object
+        Public Property saved_collections As List(Of Saved_Collections)
+        Public Property saved_media()(2) As Object
     End Class
 
     Public Class Saved_Collections
         Public Property name As String
         Public Property created_at As Date
         Public Property updated_at As Date
-        Public Property media()() As Object
+        Public Property media()(2) As Object
     End Class
 
     '----------------------------------
-
-    Public Class searches
-        Public Property searches() As Search
-    End Class
 
     Public Class Search
         Public Property search_click As String

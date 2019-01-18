@@ -6,10 +6,10 @@ Public Class Form1
     Dim contacts As List(Of contatto)
     Dim likes As likes
     Dim media As media
-    Dim messages As messages
+    Dim messages As List(Of convo_block)
     Dim profile As UserProfile
     Dim saved As Saved
-    Dim searches As searches
+    Dim searches As List(Of Search)
     Dim settings As Settings
 
     Dim path As String = "F:\TEMP\6\"
@@ -46,21 +46,21 @@ Public Class Form1
                 Case "media"
                     media = Json.JsonConvert.DeserializeObject(Of media)(file.Value)
                 Case "messages"
-                    messages = Json.JsonConvert.DeserializeObject(Of messages)(file.Value)
+                    messages = Json.JsonConvert.DeserializeObject(Of List(Of convo_block))(file.Value)
                 Case "profile"
                     profile = Json.JsonConvert.DeserializeObject(Of UserProfile)(file.Value)
                 Case "saved"
                     saved = Json.JsonConvert.DeserializeObject(Of Saved)(file.Value)
                 Case "searches"
-                    searches = Json.JsonConvert.DeserializeObject(Of searches)(file.Value)
+                    searches = Json.JsonConvert.DeserializeObject(Of List(Of Search))(file.Value)
                 Case "settings"
                     settings = Json.JsonConvert.DeserializeObject(Of Settings)(file.Value)
                 Case Else
 
             End Select
-
-
         Next
+
+
 
     End Sub
 
