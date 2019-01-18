@@ -5,6 +5,14 @@ Module Classi_JSON
     Public Class comments
         Public Property live_comments() As Object
         Public Property media_comments()(3) As Object
+
+        Public Function export() As String
+            Dim result As String = ""
+
+
+            Return result
+        End Function
+
     End Class
 
     '--------------------
