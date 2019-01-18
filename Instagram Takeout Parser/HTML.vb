@@ -1,6 +1,6 @@
 ﻿Module HTML
 
-    Dim startPageHTML As String = "
+    Public startPageHTML As String = "
 <html>
 <head>
   <title>INDEX_PAGE_TTILE_PLACEHOLDER</title>
@@ -26,10 +26,10 @@ USER_PLACEHOLDER
 </body>
 </html>"
 
-    Dim startpageCSS As String = "
+    Public startpageCSS As String = "
 .profile_info{
   justify-content: center;
-  align-content: stretch;
+  align-items: center;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -47,6 +47,8 @@ USER_PLACEHOLDER
 
 .profile_pic{
   margin: 5px;
+  height: 150px;
+  width: 150px;
 }
 
 h1 {
@@ -55,6 +57,43 @@ h1 {
 h2 {
   font-size: 2.5em;  
 }
+"
+
+    Public tableCSS As String = "
+table {
+  width:100%;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+table tr:nth-child(even) {
+  background-color: #eee;
+}
+table tr:nth-child(odd) {
+ background-color: #fff;
+}
+table th {
+  background-color: black;
+  color: white;
+}
+"
+
+    Public TableHTML As String = "
+<html>
+<head>
+<title>TABLE_PAGE_PLACEHOLDER</title>
+<style>
+TABLECSS_PLACEHOLDER
+</style>
+</head>
+<boby>
+PAGE_CONTENT_PLACEHOLDER
+</body>
 "
 
 End Module

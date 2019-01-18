@@ -7,9 +7,39 @@ Module Classi_JSON
         Public Property media_comments()(3) As Object
 
         Public Function export() As String
-            Dim result As String = ""
+            Dim result As String = "
+<table>
+  <tr>
+    <th>TimeStamp</th>
+    <th>Testo</th>
+    <th>Utente Commentato</th>
+  </tr>
+"
+            For Each live_c In live_comments
+                result &= "<tr>"
+                For Each a In live_c
+                    result &= "<td>" & a & "</td>"
+                Next
+                result &= "</tr>"
+            Next
 
+            result &= "
+<table>
+  <tr>
+    <th>TimeStamp</th>
+    <th>Testo</th>
+    <th>Utente Commentato</th>
+  </tr>
+"
+            For Each media_c In media_comments
+                result &= "<tr>"
+                For Each a In media_c
+                    result &= "<td>" & a & "</td>"
+                Next
+                result &= "</tr>"
+            Next
 
+            result &= "</table>"
             Return result
         End Function
 
@@ -109,6 +139,17 @@ Module Classi_JSON
         Public Property private_account As Boolean
         Public Property profile_pic_url As String
         Public Property username As String
+
+        Public Function export() As String
+            Dim result As String = ""
+            result &= "<p><b>Username: </b>" & username & "</p>" & vbCrLf
+            result &= "<p><b>Data Iscrizione: </b>" & date_joined.ToLongDateString & "</p>" & vbCrLf
+            result &= "<p><b>Email: </b>" & email & "</p>" & vbCrLf
+            result &= "<p><b>Sesso: </b>" & gender & "</p>" & vbCrLf
+            result &= "<p><b>Numero di Telefono: </b>" & phone_number & "</p>" & vbCrLf
+            result &= "<p><b>Profilo Privato: </b>" & If(private_account, "Si", "No") & "</p>" & vbCrLf
+            Return result
+        End Function
     End Class
 
     '-----------------------

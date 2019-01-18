@@ -18,7 +18,7 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         loadJson(path)
         parseJson()
-
+        ExportReportIndexPage()
     End Sub
 
     Sub loadJson(path)
@@ -60,8 +60,42 @@ Public Class Form1
             End Select
         Next
 
+    End Sub
+
+    Sub ExportCommentsPage()
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Commenti di " & profile.name)
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", comments.export)
+        IO.File.WriteAllText("comments.html", html_code)
+    End Sub
 
 
+    Sub ExportReportIndexPage()
+        Dim html_code As String = startPageHTML
+        Dim report_menu As String = ""
+
+        report_menu &= "<a href='.\comments.html'>Visualizza commenti</a>" & vbCrLf
+        report_menu &= "<a href='.\connections.html'>Visualizza Connessioni</a>" & vbCrLf
+        report_menu &= "<a href='.\contacts.html'>Visualizza " & contacts.Count.ToString & " Contatti</a>" & vbCrLf
+        report_menu &= "<a href='.\likes.html'>Visualizza Like</a>" & vbCrLf
+        report_menu &= "<a href='.\media.html'>Visualizza Media</a>" & vbCrLf
+        report_menu &= "<a href='.\messages.html'>Visualizza " & messages.Count.ToString & " Conversazioni</a>" & vbCrLf
+        report_menu &= "<a href='.\saved.html'>Visualizza Elementi Salvati</a>" & vbCrLf
+        report_menu &= "<a href='.\searches.html'>Visualizza " & searches.Count & " Ricerche</a>" & vbCrLf
+        report_menu &= "<a href='.\settings.html'>Visualizza Impostazioni</a>" & vbCrLf
+
+        ExportCommentsPage()
+
+
+        html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
+        html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)
+        html_code = html_code.Replace("USER_PLACEHOLDER", profile.name)
+        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", profile.profile_pic_url)
+        html_code = html_code.Replace("PROFILE_INFO_PLACEHOLDER", profile.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
+
+        IO.File.WriteAllText("Index.html", html_code)
     End Sub
 
 End Class
