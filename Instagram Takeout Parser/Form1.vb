@@ -62,14 +62,65 @@ Public Class Form1
 
     End Sub
 
+    Sub ExportLikesPage()
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Like di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", likes.export)
+        IO.File.WriteAllText("likes.html", html_code)
+    End Sub
+
     Sub ExportCommentsPage()
         Dim html_code As String = TableHTML
-        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS)
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Commenti di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", comments.export)
         IO.File.WriteAllText("comments.html", html_code)
     End Sub
 
+    Sub ExportConnectionsPage()
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Connessioni di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", connections.export)
+        IO.File.WriteAllText("connections.html", html_code)
+    End Sub
+
+    Sub ExportMediaPage()
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Media di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", media.export)
+        IO.File.WriteAllText("media.html", html_code)
+        CopyMediaFolders(path)
+    End Sub
+
+    Sub ExportContactsPage()
+
+        Dim content As String = "
+<h2>Contatti (" & contacts.Count & ")</h2>
+<table>
+  <tr>
+    <th>Nome</th>
+    <th>Cognome</th>
+    <th>Numero</th>
+  </tr>"
+        For Each contact In contacts
+            content &= contact.export & vbCrLf
+        Next
+        content &= "</table>"
+
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Contatti di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", "")
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
+        IO.File.WriteAllText("contacts.html", html_code)
+    End Sub
 
     Sub ExportReportIndexPage()
         Dim html_code As String = startPageHTML
@@ -86,7 +137,10 @@ Public Class Form1
         report_menu &= "<a href='.\settings.html'>Visualizza Impostazioni</a>" & vbCrLf
 
         ExportCommentsPage()
-
+        ExportConnectionsPage()
+        ExportContactsPage()
+        ExportLikesPage()
+        ExportMediaPage()
 
         html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)
@@ -98,4 +152,24 @@ Public Class Form1
         IO.File.WriteAllText("Index.html", html_code)
     End Sub
 
+    Sub CopyMediaFolders(SourcePath)
+        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "direct")) Then
+            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "direct"), "direct", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+        End If
+
+        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "stories")) Then
+            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "stories"), "stories", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+        End If
+
+        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "videos")) Then
+            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "videos"), "videos", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+        End If
+        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "photos")) Then
+            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "photos"), "photos", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+        End If
+
+        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "profile")) Then
+            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "profile"), "profile", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+        End If
+    End Sub
 End Class
