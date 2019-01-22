@@ -266,11 +266,27 @@ Module Classi_JSON
     '------------------------------
 
     Public Class convo_block
-        Public Property conversation As List(Of Conversation)
+        Public Property conversation As List(Of Message)
         Public Property participants As List(Of String)
+
+        Public Function getConvoName(user) As String
+            Dim p = participants.ToList()
+            p.Remove(user)
+            Dim r = String.Join(", ", p)
+            Return If(r = "", "Username non Disponibile", r)
+        End Function
+
+        Public Function export(profile) As String
+            Dim result As String = frameheaderHTML.Replace("CSS_PLACEHOLDER", frameCSS)
+            For Each m As Message In conversation.OrderBy(Function(x) x.created_at)
+                result &= m.export(profile) & vbCrLf
+            Next
+            result &= "</div></body>"
+            Return result
+        End Function
     End Class
 
-    Public Class Conversation
+    Public Class Message
         Public Property sender As String
         Public Property created_at As Date
         Public Property text As String
@@ -279,16 +295,54 @@ Module Classi_JSON
         Public Property media_share_caption As String
         Public Property media_share_url As String
         Public Property link As String
-        Public Property likes As List(Of _Like)
+        Public Property likes As Piace()
         Public Property heart As String
         Public Property video_call_action As String
         Public Property media As String
         Public Property live_video_share As String
+
+        Public Function export(profile As String) As String
+            Dim result As String = framemessageHTML
+            Dim isSent As String = If(profile = sender, "sent", "")
+            Dim likes_array As String = ""
+            If Not IsNothing(likes) Then
+                likes_array = "<div class='like " & isSent & "'>"
+                For Each l In likes
+                    likes_array &= l.export & vbCrLf
+                Next
+                likes_array &= "</div>"
+            End If
+
+            result = result.Replace("SENDER_PLACEHOLDER", If(IsNothing(sender), "<span class='Sender'>Username non Disponibile</span>", "<span class='Sender'>" & sender & "</span>"))
+            result = result.Replace("SENTCLASS_PLACEHOLDER", isSent)
+            result = result.Replace("CENTER_PLACEHOLDER", "")
+            result = result.Replace("TEXT_PLACEHOLDER", If(IsNothing(text), "", "<p class='MessageText'>" & text.Replace("<", "&lt;").Replace(">", "&gt;") & "</p>"))
+            result = result.Replace("LINK_PLACEHOLDER", If(IsNothing(text), "", "<p class='MessageText'><a href='" & link & "' target='_blank'>" & link & "</a></p>"))
+            result = result.Replace("STORY_PLACEHOLDER", If(IsNothing(story_share), "", "<p class='InfoText'>" & story_share & "</p>"))
+            result = result.Replace("VIDEOCALL_PLACEHOLDER", If(IsNothing(video_call_action), "", "<p class='InfoText'>" & video_call_action & " 📞</p>"))
+            result = result.Replace("LIVE_PLACEHOLDER", If(IsNothing(live_video_share), "", "<p class='InfoText'>" & live_video_share & "</p>"))
+            result = result.Replace("HEART_PLACEHOLDER", If(IsNothing(heart), "", "<p class='MessageText'>" & heart & "</p>"))
+            result = result.Replace("MEDIA_URL_PLACEHOLDER", If(IsNothing(media), "", "<img class='media' src='" & media & "'/>"))
+            result = result.Replace("M_OWNER_PLACEHOLDER", If(IsNothing(media_owner), "", "<p class='media_share'>" & media_owner & "</p>"))
+            result = result.Replace("M_URL_PLACEHOLDER", If(IsNothing(media_share_url), "", "<img class='media_share' src='" & media_share_url & "'/>"))
+            result = result.Replace("M_CAPTION_PLACEHOLDER", If(IsNothing(media_share_caption), "", "<p class='media_share'>" & media_share_caption & "</p>"))
+            result = result.Replace("TIMESTAMP_PLACEHOLDER", If(IsNothing(created_at), New Date(0), "<p class='Timestamp'>" & created_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC</p>"))
+            result = result.Replace("LIKE_ARRAY_PLACEHOLDER", likes_array)
+            Return result
+        End Function
+
     End Class
 
-    Public Class _Like
+    Public Class Piace
         Public Property username As String
-        Public Property _date As Date
+
+        <JsonProperty("date")>
+        Public Property data As Date
+
+        Public Function export() As String
+            Return String.Format("<i>👍🏻 {0} ({1})</i><br>", username, data)
+        End Function
+
     End Class
 
     '-----------------------

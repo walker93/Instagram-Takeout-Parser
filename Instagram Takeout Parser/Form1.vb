@@ -122,6 +122,30 @@ Public Class Form1
         IO.File.WriteAllText("contacts.html", html_code)
     End Sub
 
+    Sub ExportConversationsPage()
+        'conversations are exported in single files with the conversations.html as index with iframe
+        IO.Directory.CreateDirectory("messages")
+        Dim i As Integer = 1
+        Dim files As New Dictionary(Of String, String)
+        Dim name As String
+        Dim path As String
+        For Each convo In messages
+            name = convo.getConvoName(profile.username)
+            path = "messages\" & i & "-" & name & ".html"
+            files.Add(path, convo.getConvoName(profile.username))
+            IO.File.WriteAllText(files.Last.Key, convo.export(profile.username))
+            i += 1
+        Next
+        Dim list As String = ""
+
+        For Each file In files
+            list &= ConvoLinkHTML.Replace("CONVO_INDEX_PLACEHOLDER", file.Key).Replace("CONVO_NAME_PLACEHOLDER", file.Value)
+        Next
+        Dim indexPage As String = convoListHTML.Replace("CONVO_LIST_PLACEHOLDER", list).Replace("TITLE_PLACEHOLDER", "Conversazioni di " & profile.username)
+
+        IO.File.WriteAllText("messages.html", indexPage)
+    End Sub
+
     Sub ExportReportIndexPage()
         Dim html_code As String = startPageHTML
         Dim report_menu As String = ""
@@ -141,6 +165,7 @@ Public Class Form1
         ExportContactsPage()
         ExportLikesPage()
         ExportMediaPage()
+        ExportConversationsPage()
 
         html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)
@@ -151,6 +176,8 @@ Public Class Form1
 
         IO.File.WriteAllText("Index.html", html_code)
     End Sub
+
+
 
     Sub CopyMediaFolders(SourcePath)
         If IO.Directory.Exists(IO.Path.Combine(SourcePath, "direct")) Then

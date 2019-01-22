@@ -63,6 +63,7 @@ h2 {
     Public tableCSS As String = "
 table {
   width:100%;
+  table-layout: fixed;
 }
 table, th, td {
   border: 1px solid black;
@@ -308,5 +309,155 @@ document.addEventListener('DOMContentLoaded', function() {
     PROPIC_PLACEHOLDER
 </div>
 <script>openDiv(event, 'direct');</script>
+"
+
+    Public frameheaderHTML As String = "<html>
+    <head>
+        <style>CSS_PLACEHOLDER</style>
+    </head>
+<body>
+<div class=convo>
+"
+    Public frameCSS As String = "
+.like {
+  top: 5px;
+  line-height: 1.2em;
+  position: relative;
+  background-color: unset !important;
+  
+}
+p.media_share {
+  text-align: center;
+  margin: 0px;
+}
+img.media_share {
+  width: 40%;
+  margin-left: 30%;
+  padding: 3px;
+  border-style: solid;
+  border-width: 0px 2px 0px 2px;
+  border-radius: 0px;
+  border-color: #666666
+}
+
+img.media {
+  width: 40%;
+  margin-left: 30%;
+  border-radius: 10px;
+}
+
+.message{
+  box-shadow: 2px 2px 2px grey;
+  background-color: #E6FFCC;
+  border-radius: 20px;
+  padding: 10px;
+  width: 40%;
+  font-family: sans-serif;
+  margin-top: 10px;
+}
+
+.sent{
+  align-self: flex-end;
+  background-color: #CCF5FF;
+}
+
+.MessageText {
+    white-space: pre-line;
+}
+
+.InfoText {
+  font-style: italic;
+}
+
+.center{
+  align-self: center;
+}
+
+.Timestamp{
+  color: RGBA(100,100,100,70);
+  font-size: 9pt;
+}
+
+.Sender {
+  color: #0069CC;
+  border-style: solid;
+  border-width: 0px 0px 2px 0px;
+  border-radius: 5px;
+  display: table;
+}
+
+.convo {
+  display: flex;
+  flex-direction: column;
+}
+
+#frame {
+  right: 0px;
+  width: 80%;
+  position: absolute;
+}
+"
+    Public framemessageHTML As String = "
+<div class='message SENTCLASS_PLACEHOLDER CENTER_PLACEHOLDER'>
+  SENDER_PLACEHOLDER
+  STORY_PLACEHOLDER
+  LIVE_PLACEHOLDER
+  VIDEOCALL_PLACEHOLDER
+  TEXT_PLACEHOLDER
+  HEART_PLACEHOLDER
+  LINK_PLACEHOLDER
+  MEDIA_URL_PLACEHOLDER
+  M_OWNER_PLACEHOLDER
+  M_URL_PLACEHOLDER
+  M_CAPTION_PLACEHOLDER
+  TIMESTAMP_PLACEHOLDER
+</div>
+  LIKE_ARRAY_PLACEHOLDER
+"
+
+
+
+    Public ConvoLinkHTML As String = "<div class='convo-link'><a href='CONVO_INDEX_PLACEHOLDER' target='convo'>CONVO_NAME_PLACEHOLDER</a></div>"
+
+    Public convoListHTML As String = "
+<html>
+<head>
+  <title>TITLE_PLACEHOLDER</title>
+  <style>
+  .container{
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+.nav{
+  flex: 0.2 auto;
+  width: 0%;
+  order: 1;
+  overflow-y: scroll;
+}
+.convo-link{
+  padding: 10px 0px;
+  border-bottom: solid 0px #ccc;
+}
+
+.convo-link:hover{
+  background-color: #ccf2ff;
+}
+
+[name=convo]{
+flex: 1;
+order: 2;
+}
+  </style>
+</head>
+<body>
+  <div class='container' width=100% height=100%>
+    <nav class='nav'>
+CONVO_LIST_PLACEHOLDER
+    </nav>
+<iframe name='convo' src=''></iframe>
+</div>
+</body>
+</html>
 "
 End Module
