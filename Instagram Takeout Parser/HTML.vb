@@ -278,6 +278,25 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>openDiv(event, 'comment');</script>
 "
 
+    Public savedHTML As String = "
+<!-- Tab links -->
+<div class='tab'>
+  <button class='tablinks' onclick='openDiv(event, ""collection"")' id='default'>Collezioni Salvate</button>
+  <button Class='tablinks' onclick='openDiv(event, ""media"")'>Media Salvati</button>
+</div>
+
+<!-- Tab content -->
+<div id = 'collection' Class='tabcontent'>
+  SAVED_COLLECTION_PLACEHOLDER
+</div>
+
+<div id = 'media' Class='tabcontent'>
+  SAVED_MEDIA_PLACEHOLDER
+</div>
+
+<script>openDiv(event, 'collection');</script>
+"
+
 
     Public mediaHTML As String = "
 

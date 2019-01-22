@@ -89,6 +89,15 @@ Public Class Form1
         IO.File.WriteAllText("connections.html", html_code)
     End Sub
 
+    Sub ExportSavedPage()
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Connessioni di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", saved.export)
+        IO.File.WriteAllText("saved.html", html_code)
+    End Sub
+
     Sub ExportMediaPage()
         Dim html_code As String = TableHTML
         html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
@@ -166,6 +175,7 @@ Public Class Form1
         ExportLikesPage()
         ExportMediaPage()
         ExportConversationsPage()
+        ExportSavedPage()
 
         html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)

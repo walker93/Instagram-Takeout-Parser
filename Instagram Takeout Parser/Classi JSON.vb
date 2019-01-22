@@ -374,6 +374,52 @@ Module Classi_JSON
     Public Class Saved
         Public Property saved_collections As List(Of Saved_Collections)
         Public Property saved_media()(2) As Object
+
+        Public Function export() As String
+            Dim result As String = savedHTML
+
+            Dim extraHTML As String = "
+<h2>Collezioni Salvate (" & saved_collections.Count & ")</h2>
+<table>
+  <tr>
+    <th>TimeStamp Creazione</th>
+    <th>TimeStamp Ultimo Aggiornamento</th>
+    <th>Nome</th>
+    <th>Media contenuti</th>
+  </tr>"
+            For Each entry In saved_collections
+                extraHTML &= "<tr>"
+                extraHTML &= "<td>" & entry.created_at.ToString("yyyy/MM/dd HH:mm:ss") & "</td>"
+                extraHTML &= "<td>" & entry.updated_at.ToString("yyyy/MM/dd HH:mm:ss") & "</td>"
+                extraHTML &= "<td>" & entry.name & "</td>"
+                extraHTML &= "<td><ul>"
+                For Each m In entry.media
+                    extraHTML &= "<li>" & CType(m(0), Date).ToString("yyyy/MM/dd HH:mm:ss") & " " & m(1) & "</li>"
+                Next
+                extraHTML &= "</ul></td>"
+                extraHTML &= "</tr>"
+            Next
+            extraHTML &= "</table>"
+            result = result.Replace("SAVED_COLLECTION_PLACEHOLDER", extraHTML)
+
+            extraHTML = "
+<h2>Media Salvati (" & saved_collections.Count & ")</h2>
+<table>
+  <tr>
+    <th>TimeStamp</th>
+    <th>Utente</th>
+  </tr>"
+            For Each entry In saved_media
+                extraHTML &= "<tr>"
+                extraHTML &= "<td>" & CType(entry(0), Date).ToString("yyyy/MM/dd HH:mm:ss") & "</td>"
+                extraHTML &= "<td>" & entry(1) & "</td>"
+                extraHTML &= "</tr>"
+            Next
+            extraHTML &= "</table>"
+            result = result.Replace("SAVED_MEDIA_PLACEHOLDER", extraHTML)
+
+            Return result
+        End Function
     End Class
 
     Public Class Saved_Collections
