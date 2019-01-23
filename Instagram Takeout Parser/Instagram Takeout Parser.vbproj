@@ -76,7 +76,9 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Classi JSON.vb" />
+    <Compile Include="DownloadFile.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>

@@ -21,7 +21,7 @@ USER_PLACEHOLDER
  PROFILE_INFO_PLACEHOLDER
 </div>
 </div>
-<div class='data_block'>
+<div class='menu'>
   REPORT_LIST_PLACEHOLDER
 </div>
 </body>
@@ -58,6 +58,20 @@ h1 {
 h2 {
   font-size: 2.5em;  
 }
+
+.menu {
+    background-color: #CCCCCC;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 2px solid #555555;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    width: 75%;
+    text-align: center;
+    margin: auto;
+    padding: 10px;
+}
 "
 
     Public tableCSS As String = "
@@ -92,6 +106,17 @@ td.photo {
     font-size: 1.5em;
     overflow: hidden;
 }
+
+.menu {
+    background-color: #CCCCCC;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 2px solid #555555;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
 "
 
     Public TableHTML As String = "
@@ -107,6 +132,9 @@ JS_PLACEHOLDER
 </script>
 </head>
 <body>
+<div class='menu'>
+REPORT_LIST_PLACEHOLDER
+</div>
 PAGE_CONTENT_PLACEHOLDER
 </body>
 "
@@ -149,6 +177,7 @@ PAGE_CONTENT_PLACEHOLDER
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
+
 }
 
 /* Style the buttons that are used to open the tab content */
@@ -405,6 +434,12 @@ img.media {
     white-space: pre-line;
 }
 
+.heart {
+    font-size: 2em;
+    margin: 0;
+    text-align: center;
+}
+
 .InfoText {
   font-style: italic;
 }
@@ -488,9 +523,22 @@ img.media {
 flex: 1;
 order: 2;
 }
+
+.menu {
+    background-color: #CCCCCC;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 2px solid #555555;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
   </style>
 </head>
 <body>
+  <div class='menu'>REPORT_LIST_PLACEHOLDER</div>
   <div class='container' width=100% height=100%>
     <nav class='nav'>
 CONVO_LIST_PLACEHOLDER

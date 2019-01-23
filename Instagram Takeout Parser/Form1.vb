@@ -14,6 +14,7 @@ Public Class Form1
 
     Dim path As String = "F:\TEMP\6\"
     Dim json_list As New List(Of KeyValuePair(Of String, String))
+    Dim report_menu As String = ""
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         loadJson(path)
@@ -68,6 +69,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Like di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", likes.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("likes.html", html_code)
     End Sub
 
@@ -77,6 +79,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Commenti di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", comments.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("comments.html", html_code)
     End Sub
 
@@ -86,6 +89,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Impostazioni di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", settings.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("settings.html", html_code)
     End Sub
 
@@ -95,6 +99,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Connessioni di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", connections.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("connections.html", html_code)
     End Sub
 
@@ -104,6 +109,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Salvataggi di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", saved.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("saved.html", html_code)
     End Sub
 
@@ -113,6 +119,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Media di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", media.export)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("media.html", html_code)
         CopyMediaFolders(path)
     End Sub
@@ -137,6 +144,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Contatti di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", "")
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("contacts.html", html_code)
     End Sub
 
@@ -159,6 +167,7 @@ Public Class Form1
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Ricerche di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", "")
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
         IO.File.WriteAllText("searches.html", html_code)
     End Sub
 
@@ -181,15 +190,15 @@ Public Class Form1
         For Each file In files
             list &= ConvoLinkHTML.Replace("CONVO_INDEX_PLACEHOLDER", file.Key).Replace("CONVO_NAME_PLACEHOLDER", file.Value)
         Next
-        Dim indexPage As String = convoListHTML.Replace("CONVO_LIST_PLACEHOLDER", list).Replace("TITLE_PLACEHOLDER", "Conversazioni di " & profile.username)
+        Dim indexPage As String = convoListHTML.Replace("CONVO_LIST_PLACEHOLDER", list).Replace("TITLE_PLACEHOLDER", "Conversazioni di " & profile.username).Replace("REPORT_LIST_PLACEHOLDER", report_menu)
 
         IO.File.WriteAllText("messages.html", indexPage)
     End Sub
 
     Sub ExportReportIndexPage()
         Dim html_code As String = startPageHTML
-        Dim report_menu As String = ""
 
+        report_menu &= "<a href='.\Index.html'>HOME PAGE</a>" & vbCrLf
         report_menu &= "<a href='.\comments.html'>Visualizza commenti</a>" & vbCrLf
         report_menu &= "<a href='.\connections.html'>Visualizza Connessioni</a>" & vbCrLf
         report_menu &= "<a href='.\contacts.html'>Visualizza " & contacts.Count.ToString & " Contatti</a>" & vbCrLf
@@ -213,14 +222,12 @@ Public Class Form1
         html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)
         html_code = html_code.Replace("USER_PLACEHOLDER", profile.name)
-        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", profile.profile_pic_url)
+        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", "messages/" & DownloadUrl(profile.profile_pic_url))
         html_code = html_code.Replace("PROFILE_INFO_PLACEHOLDER", profile.export)
-        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
+        html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu.Replace("<a href='.\Index.html'>HOME PAGE</a>", ""))
 
         IO.File.WriteAllText("Index.html", html_code)
     End Sub
-
-
 
     Sub CopyMediaFolders(SourcePath)
         If IO.Directory.Exists(IO.Path.Combine(SourcePath, "direct")) Then
