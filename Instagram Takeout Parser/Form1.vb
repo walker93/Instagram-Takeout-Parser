@@ -80,6 +80,15 @@ Public Class Form1
         IO.File.WriteAllText("comments.html", html_code)
     End Sub
 
+    Sub ExportSettingsPage()
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Impostazioni di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", settings.export)
+        IO.File.WriteAllText("settings.html", html_code)
+    End Sub
+
     Sub ExportConnectionsPage()
         Dim html_code As String = TableHTML
         html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
@@ -92,7 +101,7 @@ Public Class Form1
     Sub ExportSavedPage()
         Dim html_code As String = TableHTML
         html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
-        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Connessioni di " & profile.name)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Salvataggi di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", saved.export)
         IO.File.WriteAllText("saved.html", html_code)
@@ -129,6 +138,28 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", "")
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
         IO.File.WriteAllText("contacts.html", html_code)
+    End Sub
+
+    Sub ExportSearchesPage()
+        Dim content As String = "
+<h2>Ricerche (" & searches.Count & ")</h2>
+<table>
+  <tr>
+    <th>Ricerca cliccata</th>
+    <th>Timestamp</th>
+    <th>Tipo</th>
+  </tr>"
+        For Each search In searches
+            content &= search.export & vbCrLf
+        Next
+        content &= "</table>"
+
+        Dim html_code As String = TableHTML
+        html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS)
+        html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Ricerche di " & profile.name)
+        html_code = html_code.Replace("JS_PLACEHOLDER", "")
+        html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
+        IO.File.WriteAllText("searches.html", html_code)
     End Sub
 
     Sub ExportConversationsPage()
@@ -176,6 +207,8 @@ Public Class Form1
         ExportMediaPage()
         ExportConversationsPage()
         ExportSavedPage()
+        ExportSettingsPage()
+        ExportSearchesPage()
 
         html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)

@@ -228,6 +228,31 @@ Module Classi_JSON
             extraHTML &= "</table>"
             result = result.Replace("STORIE_PLACEHOLDER", extraHTML)
 
+            extraHTML = "
+<h2>Immagini Profilo (" & profile.Count & ")</h2>
+<table>
+"
+
+            For i = 0 To profile.Count \ 4 - 1
+                extraHTML &= "<tr>"
+                extraHTML &= "<td class='photo'>" & profile(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i).path & "'/>" & "<br>" & profile(4 * i).caption & "</td>"
+                extraHTML &= "<td class='photo'>" & profile(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 1).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 1).path & "'/>" & "<br>" & profile(4 * i + 1).caption & "</td>"
+                extraHTML &= "<td class='photo'>" & profile(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 2).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 2).path & "'/>" & "<br>" & profile(4 * i + 2).caption & "</td>"
+                extraHTML &= "<td class='photo'>" & profile(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 3).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 3).path & "'/>" & "<br>" & profile(4 * i + 3).caption & "</td>"
+                extraHTML &= "</tr>"
+            Next
+            resto = profile.Count Mod 4
+            If resto > 0 Then
+                extraHTML &= "<tr>"
+                For y = resto - 1 To 0 Step -1
+                    extraHTML &= "<td class='photo'>" & profile(profile.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(profile.Count - resto).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(profile.Count - resto).path & "'/>" & "<br>" & profile(profile.Count - resto).caption & "</td>"
+                Next
+                extraHTML &= "</tr>"
+            End If
+            extraHTML &= "</table>"
+            result = result.Replace("PROPIC_PLACEHOLDER", extraHTML)
+
+
             Return result
         End Function
 
@@ -340,7 +365,7 @@ Module Classi_JSON
         Public Property data As Date
 
         Public Function export() As String
-            Return String.Format("<i>👍🏻 {0} ({1})</i><br>", username, data)
+            Return String.Format("<i>👍🏻 {0} ({1})</i><br>", If(IsNothing(username), "Username non disponibile", username), data)
         End Function
 
     End Class
@@ -435,6 +460,20 @@ Module Classi_JSON
         Public Property search_click As String
         Public Property time As Date
         Public Property type As String
+
+        Public Function export() As String
+
+            Dim result As String = "<tr>"
+
+            result &= "<td>" & search_click & " </td>"
+            result &= "<td>" & time.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC</td>"
+            result &= "<td>" & type & "</td>"
+
+            result &= "</tr>"
+
+            Return result
+
+        End Function
     End Class
 
     '--------------------
@@ -443,6 +482,49 @@ Module Classi_JSON
         Public Property allow_comments_from As String
         Public Property blocked_commenters() As Object
         Public Property filtered_keywords() As Object
+
+        Public Function export() As String
+            Dim result As String = settingsHTML
+            result = result.Replace("COMMENT_ALLOWED_PLACEHOLDER", allow_comments_from)
+
+
+            Dim extraHTML As String = "
+<h2>Utenti bloccati nei commenti (" & blocked_commenters.count & ")</h2>
+<table>
+  <tr>
+    <th>TimeStamp</th>
+    <th>Utente</th>
+  </tr>
+"
+            For Each live_c In blocked_commenters
+                extraHTML &= "<tr>"
+                extraHTML &= "<td>" & CType(live_c(0), Date).ToString("yyyy/MM/dd HH:mm:ss") & "</td>"
+                extraHTML &= "<td>" & live_c(1) & "</td>"
+                extraHTML &= "</tr>"
+            Next
+            extraHTML &= "</table>"
+            result = result.Replace("COMMENT_BLOCKED_PLACEHOLDER", extraHTML)
+
+            extraHTML = "
+<h2>Parole filtrate (" & filtered_keywords.count & ")</h2>
+<table>
+  <tr>
+    <th>TimeStamp</th>
+    <th>Testo</th>
+  </tr>
+"
+            For Each media_c In filtered_keywords
+                extraHTML &= "<tr>"
+                extraHTML &= "<td>" & CType(media_c(0), Date).ToString("yyyy/MM/dd HH:mm:ss") & " </td>"
+                extraHTML &= "<td>" & media_c(1) & "</td>"
+                extraHTML &= "</tr>"
+            Next
+            extraHTML &= "</table>"
+            result = result.Replace("FILTER_PLACEHOLDER", extraHTML)
+
+            Return result
+        End Function
+
     End Class
 
     '--------------------
@@ -526,7 +608,7 @@ Module Classi_JSON
 <table>
   <tr>
     <th>TimeStamp</th>
-    <th>Utente</th>
+    <th>Hashtag</th>
   </tr>"
             For Each entry In following_hashtags
                 extraHTML &= "<tr>"

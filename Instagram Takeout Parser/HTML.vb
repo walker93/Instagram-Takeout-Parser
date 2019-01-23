@@ -90,6 +90,7 @@ img, video{
 td.photo {
     text-align: center;
     font-size: 1.5em;
+    overflow: hidden;
 }
 "
 
@@ -273,6 +274,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div id = 'media' Class='tabcontent'>
   COMMENT_MEDIA_PLACEHOLDER
+</div>
+
+<script>openDiv(event, 'comment');</script>
+"
+
+    Public settingsHTML As String = "
+<!-- Tab links -->
+<p style='font-size: 1.5me; font-weight: bold;'>Commenti consentiti da: COMMENT_ALLOWED_PLACEHOLDER</p>
+<div class='tab'>
+  <button class='tablinks' onclick='openDiv(event, ""comment"")' id='default'>Utenti bloccati nei commenti</button>
+  <button Class='tablinks' onclick='openDiv(event, ""words"")'>Parole filtrate</button>
+</div>
+
+<!-- Tab content -->
+<div id = 'comment' Class='tabcontent'>
+  COMMENT_BLOCKED_PLACEHOLDER
+</div>
+
+<div id = 'words' Class='tabcontent'>
+  FILTER_PLACEHOLDER
 </div>
 
 <script>openDiv(event, 'comment');</script>
