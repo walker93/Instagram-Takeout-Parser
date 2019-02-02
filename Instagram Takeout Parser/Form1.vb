@@ -12,26 +12,48 @@ Public Class Form1
     Dim searches As List(Of Search)
     Dim settings As Settings
 
-    Dim path As String = "F:\TEMP\canaleamir_20190201"
+    Dim Default_path As String = "C:\Users\walke\Documents\Downloads\canaleamir_20190201"
     Dim json_list As New List(Of KeyValuePair(Of String, String))
     Dim report_menu As String = ""
-
+    WithEvents progressIndicator As New Progress(Of Tuple(Of Integer, String))
+    Public Shared input_path As String
+    Public Shared output_path As String
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        loadJson(path)
-        parseJson()
-        ExportReportIndexPage()
+        MaximumSize = New Size(Screen.PrimaryScreen.WorkingArea.Width * 2, Height)
+        MinimumSize = New Size(Width, Height)
+
+        input_path_lbl.Text = Default_path
+        input_path = Default_path
+        output_path = IO.Path.Combine(Default_path, "REPORT")
+        OutputPath_txt.Text = output_path
     End Sub
 
-    Sub loadJson(path)
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        IO.Directory.CreateDirectory(output_path)
+        progressBar.Visible = True
+        percent_lbl.Visible = True
+
+
+        loadJson(input_path, progressIndicator)
+        parseJson()
+        ExportReportIndexPage(progressIndicator)
+
+        progressBar.Visible = False
+        percent_lbl.Visible = False
+    End Sub
+
+    Async Sub loadJson(path As String, progress As IProgress(Of Tuple(Of Integer, String)))
+        json_list.Clear()
         Dim folder As New IO.DirectoryInfo(path)
         Dim files = folder.GetFiles("*.json")
+        Dim i = 1
         For Each file In files
+            reportP(progress, i, files.Length, "Lettura file " & file.Name)
             Dim text = IO.File.ReadAllText(file.FullName)
             json_list.Add(New KeyValuePair(Of String, String)(file.Name.Replace(".json", ""), text))
+            i += 1
         Next
-
     End Sub
-
 
     Sub parseJson()
         For Each file In json_list
@@ -70,7 +92,7 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", likes.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("likes.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "likes.html"), html_code)
     End Sub
 
     Sub ExportCommentsPage()
@@ -80,7 +102,7 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", comments.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("comments.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "comments.html"), html_code)
     End Sub
 
     Sub ExportSettingsPage()
@@ -90,7 +112,7 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", settings.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("settings.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "settings.html"), html_code)
     End Sub
 
     Sub ExportConnectionsPage()
@@ -100,7 +122,7 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", connections.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("connections.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "connections.html"), html_code)
     End Sub
 
     Sub ExportSavedPage()
@@ -110,21 +132,21 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", saved.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("saved.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "saved.html"), html_code)
     End Sub
 
-    Sub ExportMediaPage()
+    Sub ExportMediaPage(progress As IProgress(Of Tuple(Of Integer, String)))
         Dim html_code As String = TableHTML
         html_code = html_code.Replace("TABLECSS_PLACEHOLDER", tableCSS & TABCSS)
         html_code = html_code.Replace("TABLE_PAGE_PLACEHOLDER", "Media di " & profile.name)
         html_code = html_code.Replace("JS_PLACEHOLDER", TABJS)
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", media.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("media.html", html_code)
-        CopyMediaFolders(path)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "media.html"), html_code)
+        CopyMediaFolders(input_path, output_path, progress)
     End Sub
 
-    Sub ExportContactsPage()
+    Sub ExportContactsPage(progress As IProgress(Of Tuple(Of Integer, String)))
 
         Dim content As String = "
 <h2>Contatti (" & contacts.Count & ")</h2>
@@ -135,6 +157,7 @@ Public Class Form1
     <th>Numero</th>
   </tr>"
         For Each contact In contacts
+            reportP(progress, contacts.IndexOf(contact), contacts.Count, "Esporto Contatti")
             content &= contact.export & vbCrLf
         Next
         content &= "</table>"
@@ -145,10 +168,10 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", "")
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("contacts.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "contacts.html"), html_code)
     End Sub
 
-    Sub ExportSearchesPage()
+    Sub ExportSearchesPage(progress As IProgress(Of Tuple(Of Integer, String)))
         Dim content As String = "
 <h2>Ricerche (" & searches.Count & ")</h2>
 <table>
@@ -158,6 +181,7 @@ Public Class Form1
     <th>Tipo</th>
   </tr>"
         For Each search In searches
+            reportP(progress, searches.IndexOf(search), searches.Count, "Esporto Ricerche")
             content &= search.export & vbCrLf
         Next
         content &= "</table>"
@@ -168,21 +192,21 @@ Public Class Form1
         html_code = html_code.Replace("JS_PLACEHOLDER", "")
         html_code = html_code.Replace("PAGE_CONTENT_PLACEHOLDER", content)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu)
-        IO.File.WriteAllText("searches.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "searches.html"), html_code)
     End Sub
 
-    Sub ExportConversationsPage()
+    Sub ExportConversationsPage(progress As IProgress(Of Tuple(Of Integer, String)))
         'conversations are exported in single files with the conversations.html as index with iframe
-        IO.Directory.CreateDirectory("messages")
+        IO.Directory.CreateDirectory(IO.Path.Combine(output_path, "messages"))
         Dim i As Integer = 1
         Dim files As New Dictionary(Of String, String)
         Dim name As String
         Dim path As String
         For Each convo In messages
             name = convo.getConvoName(profile.username)
-            path = "messages\" & i & "-" & name & ".html"
+            path = IO.Path.Combine(output_path, "messages", i & "-" & name & ".html")
             files.Add(path, convo.getConvoName(profile.username))
-            IO.File.WriteAllText(files.Last.Key, convo.export(profile.username))
+            IO.File.WriteAllText(files.Last.Key, convo.export(profile.username, progress))
             i += 1
         Next
         Dim list As String = ""
@@ -192,10 +216,10 @@ Public Class Form1
         Next
         Dim indexPage As String = convoListHTML.Replace("CONVO_LIST_PLACEHOLDER", list).Replace("TITLE_PLACEHOLDER", "Conversazioni di " & profile.username).Replace("REPORT_LIST_PLACEHOLDER", report_menu)
 
-        IO.File.WriteAllText("messages.html", indexPage)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "messages.html"), indexPage)
     End Sub
 
-    Sub ExportReportIndexPage()
+    Sub ExportReportIndexPage(progress As IProgress(Of Tuple(Of Integer, String)))
         Dim html_code As String = startPageHTML
 
         report_menu &= "<a href='.\Index.html'>HOME PAGE</a>" & vbCrLf
@@ -209,44 +233,67 @@ Public Class Form1
         report_menu &= "<a href='.\searches.html'>Visualizza " & searches.Count & " Ricerche</a>" & vbCrLf
         report_menu &= "<a href='.\settings.html'>Visualizza Impostazioni</a>" & vbCrLf
 
-        ExportCommentsPage()
-        ExportConnectionsPage()
-        ExportContactsPage()
-        ExportLikesPage()
-        ExportMediaPage()
-        ExportConversationsPage()
-        ExportSavedPage()
-        ExportSettingsPage()
-        ExportSearchesPage()
+        reportP(progress, 1, 5, "Esportazione Commenti") : ExportCommentsPage()
+        reportP(progress, 2, 5, "Esportazione Connessioni") : ExportConnectionsPage()
+        reportP(progress, 3, 5, "Esportazione Impostazioni") : ExportSettingsPage()
+        reportP(progress, 4, 5, "Esportazione Like") : ExportLikesPage()
+        reportP(progress, 5, 5, "Esportazione Elementi Salvati") : ExportSavedPage()
+
+        ExportMediaPage(progress)
+        ExportContactsPage(progress)
+        ExportSearchesPage(progress)
+        ExportConversationsPage(progress)
 
         html_code = html_code.Replace("CSS_PLACEHOLDER", startpageCSS)
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)
         html_code = html_code.Replace("USER_PLACEHOLDER", profile.name)
-        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", "messages/" & DownloadUrl(profile.profile_pic_url))
+
+        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", DownloadUrl(profile.profile_pic_url))
         html_code = html_code.Replace("PROFILE_INFO_PLACEHOLDER", profile.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu.Replace("<a href='.\Index.html'>HOME PAGE</a>", ""))
 
-        IO.File.WriteAllText("Index.html", html_code)
+        IO.File.WriteAllText(IO.Path.Combine(output_path, "Index.html"), html_code)
+        reportP(progress, 10, 10, "Completato")
     End Sub
 
-    Sub CopyMediaFolders(SourcePath)
-        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "direct")) Then
-            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "direct"), "direct", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
-        End If
+    Sub CopyMediaFolders(SourcePath As String, OutputPath As String, progress As IProgress(Of Tuple(Of Integer, String)))
+        Dim folders_array() As String = {"direct", "stories", "videos", "photos", "profile"}
+        Dim i = 1
+        For Each folder In folders_array
+            reportP(progress, i, folders_array.Length, "Copio media in " & folder)
+            i += 1
+            If IO.Directory.Exists(IO.Path.Combine(SourcePath, folder)) Then
+                My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, folder),
+                                                    IO.Path.Combine(OutputPath, folder),
+                                                    FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+            End If
+        Next
+    End Sub
 
-        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "stories")) Then
-            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "stories"), "stories", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+    Private Sub btn_Browse_input_Click(sender As Object, e As EventArgs) Handles btn_Browse_input.Click
+        FolderBrowserDialog1.ShowNewFolderButton = False
+        If FolderBrowserDialog1.ShowDialog = DialogResult.OK Then
+            input_path = FolderBrowserDialog1.SelectedPath
+            input_path_lbl.Text = input_path
         End If
+    End Sub
 
-        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "videos")) Then
-            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "videos"), "videos", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        FolderBrowserDialog1.ShowNewFolderButton = True
+        If FolderBrowserDialog1.ShowDialog = DialogResult.OK Then
+            output_path = FolderBrowserDialog1.SelectedPath
+            OutputPath_txt.Text = output_path
         End If
-        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "photos")) Then
-            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "photos"), "photos", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
-        End If
+    End Sub
 
-        If IO.Directory.Exists(IO.Path.Combine(SourcePath, "profile")) Then
-            My.Computer.FileSystem.CopyDirectory(IO.Path.Combine(SourcePath, "profile"), "profile", FileIO.UIOption.OnlyErrorDialogs, FileIO.UICancelOption.DoNothing)
-        End If
+    Public Shared Sub reportP(progress As IProgress(Of Tuple(Of Integer, String)), current As Integer, total As Integer, text As String)
+        progress.Report(New Tuple(Of Integer, String)((current / total) * 100, text))
+        Application.DoEvents()
+    End Sub
+
+    Private Sub progressIndicator_ProgressChanged(sender As Object, e As Tuple(Of Integer, String)) Handles progressIndicator.ProgressChanged
+        progressBar.Value = e.Item1
+        status_lbl.Text = e.Item2
+        percent_lbl.Text = e.Item1.ToString & "%"
     End Sub
 End Class

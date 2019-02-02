@@ -156,8 +156,10 @@ Module Classi_JSON
                     extraHTML &= "</tr>"
                 End If
                 extraHTML &= "</table>"
-                result = result.Replace("DIRECT_PLACEHOLDER", extraHTML)
+            Else
+                extraHTML = ""
             End If
+            result = result.Replace("DIRECT_PLACEHOLDER", extraHTML)
 
             If Not IsNothing(photos) Then
                 extraHTML = "
@@ -181,8 +183,10 @@ Module Classi_JSON
                     extraHTML &= "</tr>"
                 End If
                 extraHTML &= "</table>"
-                result = result.Replace("PHOTO_PLACEHOLDER", extraHTML)
+            Else
+                extraHTML = ""
             End If
+            result = result.Replace("PHOTO_PLACEHOLDER", extraHTML)
 
             If Not IsNothing(videos) Then
                 extraHTML = "
@@ -206,16 +210,16 @@ Module Classi_JSON
                     extraHTML &= "</tr>"
                 End If
                 extraHTML &= "</table>"
-                result = result.Replace("VIDEO_PLACEHOLDER", extraHTML)
+            Else
+                extraHTML = ""
             End If
+            result = result.Replace("VIDEO_PLACEHOLDER", extraHTML)
 
             If Not IsNothing(stories) Then
                 extraHTML = "
 <h2>Storie (" & stories.Count & ")</h2>
 <table>
 "
-
-
                 For i = 0 To stories.Count \ 4 - 1
                     extraHTML &= "<tr>"
                     extraHTML &= "<td class='photo'>" & stories(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i).path & If(stories(4 * i).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i).caption & "</td>"
@@ -233,8 +237,10 @@ Module Classi_JSON
                     extraHTML &= "</tr>"
                 End If
                 extraHTML &= "</table>"
-                result = result.Replace("STORIE_PLACEHOLDER", extraHTML)
+            Else
+                extraHTML = ""
             End If
+            result = result.Replace("STORIE_PLACEHOLDER", extraHTML)
 
 
             If Not IsNothing(profile) Then
@@ -260,9 +266,10 @@ Module Classi_JSON
                     extraHTML &= "</tr>"
                 End If
                 extraHTML &= "</table>"
-                result = result.Replace("PROPIC_PLACEHOLDER", extraHTML)
+            Else
+                extraHTML = ""
             End If
-
+            result = result.Replace("PROPIC_PLACEHOLDER", extraHTML)
             Return result
         End Function
 
@@ -311,9 +318,11 @@ Module Classi_JSON
             Return If(r = "", "Username non Disponibile", r)
         End Function
 
-        Public Function export(profile) As String
+        Public Function export(profile As String, progress As IProgress(Of Tuple(Of Integer, String))) As String
             Dim result As String = frameheaderHTML.Replace("CSS_PLACEHOLDER", frameCSS)
-            For Each m As Message In conversation.OrderBy(Function(x) x.created_at)
+            Dim list = conversation.OrderBy(Function(x) x.created_at).ToList
+            For Each m As Message In list
+                Form1.reportP(progress, list.IndexOf(m), list.Count, "Esportazione messaggio " & list.IndexOf(m) & " su " & list.Count)
                 result &= m.export(profile) & vbCrLf
             Next
             result &= "</div></body>"

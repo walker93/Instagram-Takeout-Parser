@@ -98,7 +98,8 @@ table th {
   color: white;
 }
 img, video{
-    height: 250px;
+    max-height: 250px;
+    max-width: 250px;
 }
 
 td.photo {
@@ -109,7 +110,6 @@ td.photo {
 
 .menu {
     background-color: #CCCCCC;
-    height: 30px;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -526,7 +526,6 @@ order: 2;
 
 .menu {
     background-color: #CCCCCC;
-    height: 30px;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
