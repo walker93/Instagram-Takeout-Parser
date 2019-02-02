@@ -29,6 +29,7 @@
             If Uri.TryCreate(url, UriKind.Absolute, uri) Then
                 Dim filename As String = GetFileExtensionFromUrl(url) 'Date.Now.Ticks.ToString & 
                 Dim path As String = IO.Path.Combine("messages\downloaded", filename)
+                IO.Directory.CreateDirectory("messages\downloaded")
                 Dim web As New Net.WebClient()
                 Try
                     web.DownloadFile(uri, path)

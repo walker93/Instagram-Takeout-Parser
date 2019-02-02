@@ -12,7 +12,7 @@ Public Class Form1
     Dim searches As List(Of Search)
     Dim settings As Settings
 
-    Dim path As String = "F:\TEMP\6\"
+    Dim path As String = "F:\TEMP\canaleamir_20190201"
     Dim json_list As New List(Of KeyValuePair(Of String, String))
     Dim report_menu As String = ""
 

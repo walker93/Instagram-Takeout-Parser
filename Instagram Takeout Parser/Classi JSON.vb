@@ -131,127 +131,137 @@ Module Classi_JSON
         Public Function export() As String
             Dim result As String = mediaHTML
             Dim resto As Integer = 0
-            Dim extraHTML As String = "
+            Dim extraHTML As String = ""
+            Dim startvideo As String = "<video controls preload='none'><source "
+            Dim startimg As String = "<img class='lazy' data-"
+            If Not IsNothing(direct) Then
+                extraHTML = "
 <h2>Direct (" & direct.Count & ")</h2>
 <table>
 "
-            For i = 0 To direct.Count \ 4 - 1
-                extraHTML &= "<tr>"
-                extraHTML &= "<td class='photo'>" & direct(4 * i).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i).path & "'/></td>"
-                extraHTML &= "<td class='photo'>" & direct(4 * i + 1).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i + 1).path & "'/></td>"
-                extraHTML &= "<td class='photo'>" & direct(4 * i + 2).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i + 2).path & "'/></td>"
-                extraHTML &= "<td class='photo'>" & direct(4 * i + 3).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i + 3).path & "'/></td>"
-                extraHTML &= "</tr>"
-            Next
-            resto = direct.Count Mod 4
-            If resto > 0 Then
-                extraHTML &= "<tr>"
-                For y = resto - 1 To 0 Step -1
-                    extraHTML &= "<td class='photo'>" & direct(direct.Count - resto).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(direct.Count - resto).path & "'/></td>"
+                For i = 0 To direct.Count \ 4 - 1
+                    extraHTML &= "<tr>"
+                    extraHTML &= "<td class='photo'>" & direct(4 * i).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i).path & "'/></td>"
+                    extraHTML &= "<td class='photo'>" & direct(4 * i + 1).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i + 1).path & "'/></td>"
+                    extraHTML &= "<td class='photo'>" & direct(4 * i + 2).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i + 2).path & "'/></td>"
+                    extraHTML &= "<td class='photo'>" & direct(4 * i + 3).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(4 * i + 3).path & "'/></td>"
+                    extraHTML &= "</tr>"
                 Next
-                extraHTML &= "</tr>"
+                resto = direct.Count Mod 4
+                If resto > 0 Then
+                    extraHTML &= "<tr>"
+                    For y = resto - 1 To 0 Step -1
+                        extraHTML &= "<td class='photo'>" & direct(direct.Count - resto).taken_at.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC<br>" & "<img src='./" & direct(direct.Count - resto).path & "'/></td>"
+                    Next
+                    extraHTML &= "</tr>"
+                End If
+                extraHTML &= "</table>"
+                result = result.Replace("DIRECT_PLACEHOLDER", extraHTML)
             End If
-            extraHTML &= "</table>"
-            result = result.Replace("DIRECT_PLACEHOLDER", extraHTML)
 
-            extraHTML = "
+            If Not IsNothing(photos) Then
+                extraHTML = "
 <h2>Foto (" & photos.Count & ")</h2>
 <table>
 "
-            For i = 0 To photos.Count \ 4 - 1
-                extraHTML &= "<tr>"
-                extraHTML &= "<td class='photo'>" & photos(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i).path & "'/><br>" & photos(4 * i).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & photos(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i + 1).path & "'/><br>" & photos(4 * i + 1).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & photos(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i + 2).path & "'/><br>" & photos(4 * i + 2).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & photos(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i + 3).path & "'/><br>" & photos(4 * i + 3).caption & "</td>"
-                extraHTML &= "</tr>"
-            Next
-            resto = photos.Count Mod 4
-            If resto > 0 Then
-                extraHTML &= "<tr>"
-                For y = resto - 1 To 0 Step -1
-                    extraHTML &= "<td class='photo'>" & photos(photos.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(photos.Count - resto).path & "'/><br>" & photos(photos.Count - resto).caption & "</td>"
+                For i = 0 To photos.Count \ 4 - 1
+                    extraHTML &= "<tr>"
+                    extraHTML &= "<td class='photo'>" & photos(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i).path & "'/><br>" & photos(4 * i).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & photos(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i + 1).path & "'/><br>" & photos(4 * i + 1).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & photos(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i + 2).path & "'/><br>" & photos(4 * i + 2).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & photos(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(4 * i + 3).path & "'/><br>" & photos(4 * i + 3).caption & "</td>"
+                    extraHTML &= "</tr>"
                 Next
-                extraHTML &= "</tr>"
+                resto = photos.Count Mod 4
+                If resto > 0 Then
+                    extraHTML &= "<tr>"
+                    For y = resto - 1 To 0 Step -1
+                        extraHTML &= "<td class='photo'>" & photos(photos.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<img class='lazy' data-src='./" & photos(photos.Count - resto).path & "'/><br>" & photos(photos.Count - resto).caption & "</td>"
+                    Next
+                    extraHTML &= "</tr>"
+                End If
+                extraHTML &= "</table>"
+                result = result.Replace("PHOTO_PLACEHOLDER", extraHTML)
             End If
-            extraHTML &= "</table>"
-            result = result.Replace("PHOTO_PLACEHOLDER", extraHTML)
 
-
-            extraHTML = "
+            If Not IsNothing(videos) Then
+                extraHTML = "
 <h2>Video (" & videos.Count & ")</h2>
 <table>
 "
-            For i = 0 To videos.Count \ 4 - 1
-                extraHTML &= "<tr>"
-                extraHTML &= "<td class='photo'>" & videos(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i).path & "'></video><br>" & videos(4 * i).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & videos(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i + 1).path & "'></video><br>" & videos(4 * i + 1).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & videos(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i + 2).path & "'></video><br>" & videos(4 * i + 2).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & videos(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i + 3).path & "'></video><br>" & videos(4 * i + 3).caption & "</td>"
-                extraHTML &= "</tr>"
-            Next
-            resto = videos.Count Mod 4
-            If resto > 0 Then
-                extraHTML &= "<tr>"
-                For y = resto - 1 To 0 Step -1
-                    extraHTML &= "<td class='photo'>" & videos(videos.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(videos.Count - resto).path & "'></video><br>" & videos(videos.Count - resto).caption & "</td>"
+                For i = 0 To videos.Count \ 4 - 1
+                    extraHTML &= "<tr>"
+                    extraHTML &= "<td class='photo'>" & videos(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i).path & "'></video><br>" & videos(4 * i).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & videos(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i + 1).path & "'></video><br>" & videos(4 * i + 1).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & videos(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i + 2).path & "'></video><br>" & videos(4 * i + 2).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & videos(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(4 * i + 3).path & "'></video><br>" & videos(4 * i + 3).caption & "</td>"
+                    extraHTML &= "</tr>"
                 Next
-                extraHTML &= "</tr>"
+                resto = videos.Count Mod 4
+                If resto > 0 Then
+                    extraHTML &= "<tr>"
+                    For y = resto - 1 To 0 Step -1
+                        extraHTML &= "<td class='photo'>" & videos(videos.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & "<video controls preload='none'><source src='./" & videos(videos.Count - resto).path & "'></video><br>" & videos(videos.Count - resto).caption & "</td>"
+                    Next
+                    extraHTML &= "</tr>"
+                End If
+                extraHTML &= "</table>"
+                result = result.Replace("VIDEO_PLACEHOLDER", extraHTML)
             End If
-            extraHTML &= "</table>"
-            result = result.Replace("VIDEO_PLACEHOLDER", extraHTML)
 
-
-            extraHTML = "
+            If Not IsNothing(stories) Then
+                extraHTML = "
 <h2>Storie (" & stories.Count & ")</h2>
 <table>
 "
-            Dim startvideo As String = "<video controls preload='none'><source "
-            Dim startimg As String = "<img class='lazy' data-"
 
-            For i = 0 To stories.Count \ 4 - 1
-                extraHTML &= "<tr>"
-                extraHTML &= "<td class='photo'>" & stories(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i).path & If(stories(4 * i).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & stories(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i + 1).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i + 1).path & If(stories(4 * i + 1).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i + 1).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & stories(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i + 2).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i + 2).path & If(stories(4 * i + 2).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i + 2).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & stories(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i + 3).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i + 3).path & If(stories(4 * i + 3).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i + 3).caption & "</td>"
-                extraHTML &= "</tr>"
-            Next
-            resto = stories.Count Mod 4
-            If resto > 0 Then
-                extraHTML &= "<tr>"
-                For y = resto - 1 To 0 Step -1
-                    extraHTML &= "<td class='photo'>" & stories(stories.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(stories.Count - resto).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(stories.Count - resto).path & If(stories(stories.Count - resto).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(stories.Count - resto).caption & "</td>"
+
+                For i = 0 To stories.Count \ 4 - 1
+                    extraHTML &= "<tr>"
+                    extraHTML &= "<td class='photo'>" & stories(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i).path & If(stories(4 * i).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & stories(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i + 1).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i + 1).path & If(stories(4 * i + 1).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i + 1).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & stories(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i + 2).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i + 2).path & If(stories(4 * i + 2).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i + 2).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & stories(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(4 * i + 3).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(4 * i + 3).path & If(stories(4 * i + 3).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(4 * i + 3).caption & "</td>"
+                    extraHTML &= "</tr>"
                 Next
-                extraHTML &= "</tr>"
+                resto = stories.Count Mod 4
+                If resto > 0 Then
+                    extraHTML &= "<tr>"
+                    For y = resto - 1 To 0 Step -1
+                        extraHTML &= "<td class='photo'>" & stories(stories.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(stories(stories.Count - resto).path.EndsWith("mp4"), startvideo, startimg) & "src='./" & stories(stories.Count - resto).path & If(stories(stories.Count - resto).path.EndsWith("mp4"), "'></video>", "'/>") & "<br>" & stories(stories.Count - resto).caption & "</td>"
+                    Next
+                    extraHTML &= "</tr>"
+                End If
+                extraHTML &= "</table>"
+                result = result.Replace("STORIE_PLACEHOLDER", extraHTML)
             End If
-            extraHTML &= "</table>"
-            result = result.Replace("STORIE_PLACEHOLDER", extraHTML)
 
-            extraHTML = "
+
+            If Not IsNothing(profile) Then
+                extraHTML = "
 <h2>Immagini Profilo (" & profile.Count & ")</h2>
 <table>
 "
 
-            For i = 0 To profile.Count \ 4 - 1
-                extraHTML &= "<tr>"
-                extraHTML &= "<td class='photo'>" & profile(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i).path & "'/>" & "<br>" & profile(4 * i).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & profile(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 1).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 1).path & "'/>" & "<br>" & profile(4 * i + 1).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & profile(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 2).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 2).path & "'/>" & "<br>" & profile(4 * i + 2).caption & "</td>"
-                extraHTML &= "<td class='photo'>" & profile(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 3).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 3).path & "'/>" & "<br>" & profile(4 * i + 3).caption & "</td>"
-                extraHTML &= "</tr>"
-            Next
-            resto = profile.Count Mod 4
-            If resto > 0 Then
-                extraHTML &= "<tr>"
-                For y = resto - 1 To 0 Step -1
-                    extraHTML &= "<td class='photo'>" & profile(profile.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(profile.Count - resto).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(profile.Count - resto).path & "'/>" & "<br>" & profile(profile.Count - resto).caption & "</td>"
+                For i = 0 To profile.Count \ 4 - 1
+                    extraHTML &= "<tr>"
+                    extraHTML &= "<td class='photo'>" & profile(4 * i).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i).path & "'/>" & "<br>" & profile(4 * i).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & profile(4 * i + 1).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 1).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 1).path & "'/>" & "<br>" & profile(4 * i + 1).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & profile(4 * i + 2).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 2).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 2).path & "'/>" & "<br>" & profile(4 * i + 2).caption & "</td>"
+                    extraHTML &= "<td class='photo'>" & profile(4 * i + 3).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(4 * i + 3).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(4 * i + 3).path & "'/>" & "<br>" & profile(4 * i + 3).caption & "</td>"
+                    extraHTML &= "</tr>"
                 Next
-                extraHTML &= "</tr>"
+                resto = profile.Count Mod 4
+                If resto > 0 Then
+                    extraHTML &= "<tr>"
+                    For y = resto - 1 To 0 Step -1
+                        extraHTML &= "<td class='photo'>" & profile(profile.Count - resto).taken_at.ToString("yyyy/MM/dd HH:mm:ss") & "<br>" & If(profile(profile.Count - resto).is_active_profile, "ATTUALE", "") & "<br>" & startimg & "src='./" & profile(profile.Count - resto).path & "'/>" & "<br>" & profile(profile.Count - resto).caption & "</td>"
+                    Next
+                    extraHTML &= "</tr>"
+                End If
+                extraHTML &= "</table>"
+                result = result.Replace("PROPIC_PLACEHOLDER", extraHTML)
             End If
-            extraHTML &= "</table>"
-            result = result.Replace("PROPIC_PLACEHOLDER", extraHTML)
-
 
             Return result
         End Function
