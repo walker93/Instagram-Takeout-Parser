@@ -145,6 +145,7 @@ td.photo {
         background-color: white !important;
         color: black !important;
         font-weight: bold;
+        padding: 2mm;
       }
 
       tr {
@@ -152,7 +153,7 @@ td.photo {
       }
 
       td {
-        padding: 2mm;
+        padding: 1.5mm;
       }
       img, video{
         border: 1px solid black;
