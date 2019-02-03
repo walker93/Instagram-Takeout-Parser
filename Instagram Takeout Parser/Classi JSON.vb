@@ -320,6 +320,7 @@ Module Classi_JSON
 
         Public Function export(profile As String, progress As IProgress(Of Tuple(Of Integer, String))) As String
             Dim result As String = frameheaderHTML.Replace("CSS_PLACEHOLDER", frameCSS)
+            result = result.Replace("CHAT_TITLE_PLACEHOLDER", "Chat con " & getConvoName(profile))
             Dim list = conversation.OrderBy(Function(x) x.created_at).ToList
             For Each m As Message In list
                 Form1.reportP(progress, list.IndexOf(m), list.Count, "Esportazione messaggio " & list.IndexOf(m) & " su " & list.Count)
@@ -384,7 +385,7 @@ Module Classi_JSON
         Public Property data As Date
 
         Public Function export() As String
-            Return String.Format("<i>👍🏻 {0} ({1})</i><br>", If(IsNothing(username), "Username non disponibile", username), data)
+            Return String.Format("<i>👍🏻 {0} ({1})</i><br>", If(IsNothing(username), "Username non disponibile", username), data.ToUniversalTime.ToString("yyyy/MM/dd HH:mm:ss") & "UTC")
         End Function
 
     End Class

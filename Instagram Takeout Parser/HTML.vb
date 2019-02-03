@@ -72,6 +72,13 @@ h2 {
     margin: auto;
     padding: 10px;
 }
+
+    @media print {
+      .menu {
+        visibility: hidden;
+      }
+    }
+
 "
 
     Public tableCSS As String = "
@@ -85,7 +92,7 @@ table, th, td {
 }
 th, td {
   padding: 15px;
-  text-align: left;
+  /*text-align: left;*/
 }
 table tr:nth-child(even) {
   background-color: #eee;
@@ -117,6 +124,41 @@ td.photo {
     margin-bottom: 10px;
     font-size: 1.2em;
 }
+
+@media print {
+
+      .menu,
+      .tab {
+        display: none;
+      }
+
+      .tabcontent {
+        border: none !important;
+        display: block !important;
+        position: relative;
+      }
+      h2{
+        break-after: avoid;
+        position: relative;
+      }
+      th {
+        background-color: white !important;
+        color: black !important;
+        font-weight: bold;
+      }
+
+      tr {
+        page-break-inside: avoid;
+      }
+
+      td {
+        padding: 2mm;
+      }
+      img, video{
+        border: 1px solid black;
+      }
+    }
+
 "
 
     Public TableHTML As String = "
@@ -385,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <style>CSS_PLACEHOLDER</style>
     </head>
 <body>
+<h2 class='title'>CHAT_TITLE_PLACEHOLDER</h2>
 <div class=convo>
 "
     Public frameCSS As String = "
@@ -393,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
   line-height: 1.2em;
   position: relative;
   background-color: unset !important;
-  
+  padding: 0 3mm 1mm 3mm;
 }
 p.media_share {
   text-align: center;
@@ -410,6 +453,7 @@ img.media_share {
 }
 
 img.media {
+  margin-top: 1%;
   width: 40%;
   margin-left: 30%;
   border-radius: 10px;
@@ -465,12 +509,43 @@ img.media {
   display: flex;
   flex-direction: column;
 }
+.title {
+  display: none;
+}
 
 #frame {
   right: 0px;
   width: 80%;
   position: absolute;
 }
+
+@media print{
+      .message {
+        break-inside: avoid;
+        position: relative;
+        background: none;
+        box-shadow: none;
+        border: 1px solid black;
+      }
+      .like {
+        break-before: avoid;
+        width: fit-content;
+      }
+      .convo {
+        position: relative;
+        display: block;
+      }
+      .MessageText, .Timestamp {
+        margin: 1mm
+      }
+      .sent {
+        margin-left: auto;
+        margin-right: 0px;
+      }
+      .title {
+        display: block;
+      }
+    }
 "
     Public framemessageHTML As String = "
 <div class='message SENTCLASS_PLACEHOLDER CENTER_PLACEHOLDER'>

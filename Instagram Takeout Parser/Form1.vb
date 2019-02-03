@@ -42,7 +42,7 @@ Public Class Form1
         percent_lbl.Visible = False
     End Sub
 
-    Async Sub loadJson(path As String, progress As IProgress(Of Tuple(Of Integer, String)))
+    Sub loadJson(path As String, progress As IProgress(Of Tuple(Of Integer, String)))
         json_list.Clear()
         Dim folder As New IO.DirectoryInfo(path)
         Dim files = folder.GetFiles("*.json")
