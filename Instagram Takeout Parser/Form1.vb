@@ -40,6 +40,7 @@ Public Class Form1
 
         progressBar.Visible = False
         percent_lbl.Visible = False
+        My.Computer.Audio.PlaySystemSound(System.Media.SystemSounds.Asterisk)
     End Sub
 
     Sub loadJson(path As String, progress As IProgress(Of Tuple(Of Integer, String)))

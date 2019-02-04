@@ -9,6 +9,7 @@
                 Dim path As String = IO.Path.Combine(Form1.output_path, "messages\downloaded", filename)
                 IO.Directory.CreateDirectory(IO.Path.Combine(Form1.output_path, "messages\downloaded"))
                 Dim web As New Net.WebClient()
+                web.CachePolicy = New Net.Cache.RequestCachePolicy(Net.Cache.RequestCacheLevel.Default)
                 Try
                     web.DownloadFile(uri, path)
                     path = path.Replace("\", "/") '.Replace("messages/", "")
