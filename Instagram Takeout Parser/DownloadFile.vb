@@ -12,7 +12,7 @@
                 web.CachePolicy = New Net.Cache.RequestCachePolicy(Net.Cache.RequestCacheLevel.Default)
                 Try
                     web.DownloadFile(uri, path)
-                    path = path.Replace("\", "/") '.Replace("messages/", "")
+                    path = path.Replace(Form1.output_path & "\messages\", "").Replace("\", "/")
                     Return path
                 Catch webEx As Net.WebException
                     If webEx.Status = Net.WebExceptionStatus.Timeout Then MsgBox("timeout")

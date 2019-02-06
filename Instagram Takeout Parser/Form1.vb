@@ -249,7 +249,7 @@ Public Class Form1
         html_code = html_code.Replace("INDEX_PAGE_TTILE_PLACEHOLDER", "Report Instagram Takeout di " & profile.name)
         html_code = html_code.Replace("USER_PLACEHOLDER", profile.name)
 
-        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", DownloadUrl(profile.profile_pic_url))
+        html_code = html_code.Replace("PROPIC_URL_PLACEHOLDER", "messages/" & DownloadUrl(profile.profile_pic_url))
         html_code = html_code.Replace("PROFILE_INFO_PLACEHOLDER", profile.export)
         html_code = html_code.Replace("REPORT_LIST_PLACEHOLDER", report_menu.Replace("<a href='.\Index.html'>HOME PAGE</a>", ""))
 
