@@ -205,9 +205,9 @@ Public Class Form1
         Dim path As String
         For Each convo In messages
             name = convo.getConvoName(profile.username)
-            path = IO.Path.Combine(output_path, "messages", i & "-" & name & ".html")
+            path = IO.Path.Combine("messages", i & "-" & name & ".html")
             files.Add(path, convo.getConvoName(profile.username))
-            IO.File.WriteAllText(files.Last.Key, convo.export(profile.username, progress))
+            IO.File.WriteAllText(output_path & "\" & files.Last.Key, convo.export(profile.username, progress))
             i += 1
         Next
         Dim list As String = ""
@@ -276,6 +276,8 @@ Public Class Form1
         If FolderBrowserDialog1.ShowDialog = DialogResult.OK Then
             input_path = FolderBrowserDialog1.SelectedPath
             input_path_lbl.Text = input_path
+            output_path = IO.Path.Combine(input_path, "REPORT")
+            OutputPath_txt.Text = output_path
         End If
     End Sub
 
